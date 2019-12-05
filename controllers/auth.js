@@ -37,20 +37,25 @@ const register = (req, res) => {
 
 // POST login
 const login = (req, res) => {
+  console.log(req.body.username)
   if (!req.body.username || !req.body.password) {
     return res.status(400).json({ status: 400, message: 'Please enter your username and password'});
   }
-
+  console.log('finding User')
   db.User.findOne({username: req.body.username}, (error, foundUser) => {
     if (error) return res.status(500).json({ status: 500, message: 'Something went wrong. Please try again' });
     if (!foundUser) {
       return res.status(400).json({ status: 400, message: 'Username or Password is incorrect'});
     }
-
+    console.log(foundUser)
+    console.log('comparing password')
+    console.log(req.body.password, foundUser.password)
     bcrypt.compare(req.body.password, foundUser.password, (error, isMatch) => {
+
       if (error) return res.status(500).json({ status: 500, message: 'Something went wrong. Please try again'});
 
       if (isMatch) {
+        console.log('passwords match')
         req.session.currentUser = { id: foundUser._id };
         return res.status(200).json({ status: 200, message: 'Success', data: foundUser._id });
       } else {
