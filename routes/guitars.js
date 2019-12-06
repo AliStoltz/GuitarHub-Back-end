@@ -8,7 +8,10 @@ const ctrl = require('../controllers')
 //GET All guitars
 router.get('/all', ctrl.guitars.showAllGuitars);
 
-// router.get('/:id', ctrl.guitars.show);
+//GET All User guitars
+router.get('/user', ctrl.guitars.showUserGuitars);
+
+// GET One Guitar
 router.get('/:id', ctrl.guitars.show);
 
 // ADD guitar

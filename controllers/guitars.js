@@ -28,6 +28,23 @@ const showAllGuitars = (req, res) => {
 };
 
 
+// GET all User Guitars
+const showUserGuitars = (req, res) => {
+  db.Guitar.find({user: req.session.currentUser.id})
+  .populate('user')
+  .exec((error, userGuitars) => {
+    if(error) return res.status(500).json({
+      status: 500,
+      message: error
+    });
+    res.status(200).json({
+      status: 200,
+      data: userGuitars
+    });
+  });
+};
+
+
 // GET one Post
 const show = (req, res) => {
   db.Guitar.findById(req.params.id)
@@ -49,17 +66,10 @@ const addGuitar = (req, res) => {
   const guitarData = {...req.body, user: req.session.currentUser.id};
   db.Guitar.create(guitarData, (error, createdGuitar)=>{
       if (error) return console.log(error);
-      db.User.findById(createdGuitar.user, (err, foundUser) => {
-          if (err) return console.log(err);
-          foundUser.guitars.push(createdGuitar._id);
-          foundUser.save((err, updatedUser) => {
-              if (err) return console.log(err);
-              res.json({
-                  status: 201,
-                  data: updatedUser,
-              });
-          });
-      });
+      res.json({
+        status: 201,
+        data: createdGuitar,
+    });
   });
 };
 
@@ -94,5 +104,6 @@ module.exports = {
   show,
   addGuitar,
   deleteGuitar,
-  updateGuitar
+  updateGuitar,
+  showUserGuitars
 };
