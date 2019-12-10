@@ -2,10 +2,12 @@ const bcrypt = require('bcryptjs');
 const db = require('../models');
 
 const register = (req, res) => {
+  console.log('hi');
   if (!req.body.username || !req.body.email || !req.body.password) {
       return res.json({ status: 400, message: 'Please enter a name, email, and password' });
   }
-  db.User.findOne({ name: req.body.username }, (err, foundUser) => {
+  db.User.findOne({ username: req.body.username }, (err, foundUser) => {
+    console.log(foundUser)
       if (err) return res.json({ status: 500, message: 'Something went wrong... Please try again!'});
       if (foundUser) return res.json({ status: 400, message: 'Something went wrong... Please try again!'});
       db.User.findOne({ email: req.body.email }, (err, foundUser) => {
